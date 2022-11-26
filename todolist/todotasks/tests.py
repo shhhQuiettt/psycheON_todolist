@@ -42,14 +42,14 @@ class TasksListApiTest(APITestCase):
             "done_date",
         }
 
-        client_ip = "10.0.0.14"
-        cls.client = APIClient(HTTP_X_FORWARDED_FOR=client_ip)
+        cls.client_ip = "10.0.0.14"
+        cls.client = APIClient(HTTP_X_FORWARDED_FOR=cls.client_ip, REMOTE_ADDR=cls.client_ip)
+        # print(cls.client.)
 
         super().setUpClass()
 
     @classmethod
     def setUpTestData(cls):
-
         cls.tasks = [
             Task.objects.create(
                 title="ąęćłasdf",
@@ -78,7 +78,7 @@ class TasksListApiTest(APITestCase):
         url = reverse(self.task_list_view_name)
         res = self.client.get(url)
 
-        returned_ids = [t.id for t in res.data]
+        returned_ids = [t.get("id") for t in res.data]
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), len(self.tasks))
@@ -190,11 +190,12 @@ class TasksListApiTest(APITestCase):
         url = reverse(self.task_list_view_name)
         req_data = {"title": "Do the laundry", "done": True}
 
-        res = self.client.post(url, req_data)
+        client_ip = "10.0.0.4"
+        res = self.client.post(url, req_data, HTTP_X_FORWARDED_FOR=client_ip)
         task = Task.objects.get(pk=res.data.get("id"))
 
         self.assertTrue(task.done)
-        self.assertEqual(task.author_ip, self.client_ip)
+        self.assertEqual(task.author_ip, client_ip)
 
 
 class TasksDetailApiTest(APITestCase):
@@ -236,14 +237,14 @@ class TasksDetailApiTest(APITestCase):
     # Explicit d task test
     def test_detail_endpoint_exists(self):
         try:
-            reverse(self.task_detail_view_name)
+            reverse(self.task_detail_view_name, kwargs={"pk": 3})
         except NoReverseMatch:
             self.fail(f"{self.task_detail_view_name} does not exist")
 
     # Explicit task d
     def test_retrieving_task_possible_if_id_exists_and_returns_proper_fields(self):
         task_id = self.task1.id
-        url = reverse(self.task_detail_view_name, kwargs={"task_pk": task_id})
+        url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
 
         res = self.client.get(url)
 
@@ -253,7 +254,7 @@ class TasksDetailApiTest(APITestCase):
     # Explicit task d
     def test_retrieving_task_with_unknown_id_returns_404(self):
         task_id = self.task1.id + self.task2.id
-        url = reverse(self.task_detail_view_name, kwargs={"task_pk": task_id})
+        url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
 
         res = self.client.get(url)
 
@@ -262,18 +263,17 @@ class TasksDetailApiTest(APITestCase):
     # Explicit task e
     def test_deleting_task_possible_if_id_exists(self):
         task_id = self.task1.id
-        url = reverse(self.task_detail_view_name, kwargs={"task_pk": task_id})
+        url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
 
         res = self.client.delete(url)
-        deleted_task_id = res.data.get("id")
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Task.objects.filter(id=deleted_task_id), 0)
+        self.assertEqual(Task.objects.filter(id=task_id).count(), 0)
 
     # Explicit task e
     def test_deleting_task_with_unknown_id_returns_404(self):
         task_id = self.task1.id + self.task2.id
-        url = reverse(self.task_detail_view_name, kwargs={"task_pk": task_id})
+        url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
 
         res = self.client.delete(url)
 
