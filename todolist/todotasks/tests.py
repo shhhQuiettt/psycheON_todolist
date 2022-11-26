@@ -44,7 +44,6 @@ class TasksListApiTest(APITestCase):
 
         cls.client_ip = "10.0.0.14"
         cls.client = APIClient(HTTP_X_FORWARDED_FOR=cls.client_ip, REMOTE_ADDR=cls.client_ip)
-        # print(cls.client.)
 
         super().setUpClass()
 
@@ -162,7 +161,6 @@ class TasksListApiTest(APITestCase):
         res = self.client.post(url, req_data)
 
         task = Task.objects.get(pk=res.data.get("id"))
-        print(task.id, task.done, task.done_date)
 
         self.assertTrue(task.done)
         self.assertEqual(task.done_date, done_date)
