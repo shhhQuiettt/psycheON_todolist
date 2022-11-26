@@ -147,7 +147,7 @@ class TasksListApiTest(APITestCase):
 
         res = self.client.post(url, req_data)
         new_tasks_count = Task.objects.count()
-
+        
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(new_tasks_count, prev_tasks_count + 1)
 
@@ -162,6 +162,7 @@ class TasksListApiTest(APITestCase):
         res = self.client.post(url, req_data)
 
         task = Task.objects.get(pk=res.data.get("id"))
+        print(task.id, task.done, task.done_date)
 
         self.assertTrue(task.done)
         self.assertEqual(task.done_date, done_date)
