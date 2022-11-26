@@ -107,7 +107,7 @@ class TasksListApiTest(APITestCase):
 
         res = self.client.post(url, req_data)
 
-        task = Task.objects.get(pk=res.data["id"])
+        task = Task.objects.get(pk=res.data.get("id"))
 
         self.assertFalse(task.done)
         self.assertIsNone(task.done_date)
@@ -133,7 +133,7 @@ class TasksListApiTest(APITestCase):
 
         res = self.client.post(url, req_data)
 
-        task = Task.objects.get(pk=res.data["id"])
+        task = Task.objects.get(pk=res.data.get("id"))
 
         self.assertTrue(task.done)
         self.assertEqual(task.done_date, timezone.now().date())
@@ -161,7 +161,7 @@ class TasksListApiTest(APITestCase):
 
         res = self.client.post(url, req_data)
 
-        task = Task.objects.get(pk=res.data["id"])
+        task = Task.objects.get(pk=res.data.get("id"))
 
         self.assertTrue(task.done)
         self.assertEqual(task.done_date, done_date)
@@ -191,7 +191,7 @@ class TasksListApiTest(APITestCase):
         req_data = {"title": "Do the laundry", "done": True}
 
         res = self.client.post(url, req_data)
-        task = Task.objects.get(pk=res.data["id"])
+        task = Task.objects.get(pk=res.data.get("id"))
 
         self.assertTrue(task.done)
         self.assertEqual(task.author_ip, self.client_ip)
@@ -265,7 +265,7 @@ class TasksDetailApiTest(APITestCase):
         url = reverse(self.task_detail_view_name, kwargs={"task_pk": task_id})
 
         res = self.client.delete(url)
-        deleted_task_id = res.data["id"]
+        deleted_task_id = res.data.get("id")
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Task.objects.filter(id=deleted_task_id), 0)
