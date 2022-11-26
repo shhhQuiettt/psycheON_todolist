@@ -31,7 +31,7 @@ class TaskModelTest(TestCase):
 class TasksListApiTest(APITestCase):
     @classmethod
     def setUpClass(cls):
-        cls.task_list_view_name = "tasks"
+        cls.task_list_view_name = "task-list"
 
         cls.retrieve_fields = {
             "id",
