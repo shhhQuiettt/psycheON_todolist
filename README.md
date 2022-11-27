@@ -1,11 +1,4 @@
-
 # Todo list
-
-
-
-
-
-
 
 a) Zawiera model z następującymi parametrami: id (int, identyfikator), title (str, tytuł
 zadania), done (bool, czy zadanie zostało zrobione), author_ip (str, adres ip osoby
@@ -33,13 +26,19 @@ e) Posiada widok ‘/todolist/<id_zadania>’ z metodą DELETE, który w przypad
 identyfikatora zadania, które nie istnieje, zwraca HTTP 404, lecz w przypadku
 istniejącego zadania, to zadanie zostanie usunięte z bazy danych.
 
-f) Posiada testy, które sprawdzą poprawność działania programu. 
+f) Posiada testy, które sprawdzą poprawność działania programu.
 
 #
-Tests, that explicitly test task point, are marked by 
+
+Tests, that explicitly test task point, are marked by
+
 ```
 # Explicit <point> test
 ```
+
+## Documentation
+
+Documentation in the swagger form is available under `/swagger-ui` endpoint
 
 ## Setting up
 
@@ -51,10 +50,10 @@ docker-compose up --build
 
 Next program startup can be executed without the `--build` flag
 
-## Testing 
+## Testing
+
 To run tests, run the following command, when the cotainer is already up
 
 ```bash
   docker-compose exec app python manage.py test
 ```
-
