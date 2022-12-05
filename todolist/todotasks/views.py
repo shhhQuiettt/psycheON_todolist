@@ -37,6 +37,6 @@ class TaskListView(generics.ListCreateAPIView):
     get=extend_schema(summary="Retrieve task with the given id"),
     delete=extend_schema(summary="Delete task with the given id"),
 )
-class TaskDetailView(generics.RetrieveDestroyAPIView):
+class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.TaskSerializer
     queryset = Task.objects.all()

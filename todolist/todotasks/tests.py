@@ -43,7 +43,9 @@ class TasksListApiTest(APITestCase):
         }
 
         cls.client_ip = "10.0.0.14"
-        cls.client = APIClient(HTTP_X_FORWARDED_FOR=cls.client_ip, REMOTE_ADDR=cls.client_ip)
+        cls.client = APIClient(
+            HTTP_X_FORWARDED_FOR=cls.client_ip, REMOTE_ADDR=cls.client_ip
+        )
 
         super().setUpClass()
 
@@ -54,8 +56,8 @@ class TasksListApiTest(APITestCase):
                 title="ąęćłasdf",
                 done=False,
                 author_ip="10.0.0.4",
-                created_date=timezone.now() - timedelta(days=9),
-                done_date=timezone.now() - timedelta(days=6),
+                created_date=(timezone.now() - timedelta(days=9)).date(),
+                done_date=(timezone.now() - timedelta(days=6)).date(),
             ),
             Task.objects.create(
                 title="ąęćłasdf",
@@ -146,7 +148,7 @@ class TasksListApiTest(APITestCase):
 
         res = self.client.post(url, req_data)
         new_tasks_count = Task.objects.count()
-        
+
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(new_tasks_count, prev_tasks_count + 1)
 
@@ -222,15 +224,15 @@ class TasksDetailApiTest(APITestCase):
             title="ąęćłasdf",
             done=False,
             author_ip="10.0.0.4",
-            created_date=timezone.now() - timedelta(days=9),
-            done_date=timezone.now() - timedelta(days=6),
+            created_date=(timezone.now() - timedelta(days=9)).date(),
+            done_date=None,
         )
         cls.task2 = Task.objects.create(
             title="Do things",
             done=True,
             author_ip="10.0.0.4",
-            created_date=timezone.now() - timedelta(days=9),
-            done_date=timezone.now() - timedelta(days=6),
+            created_date=(timezone.now() - timedelta(days=9)).date(),
+            done_date=(timezone.now() - timedelta(days=6)).date(),
         )
 
     # Explicit d task test
@@ -275,5 +277,28 @@ class TasksDetailApiTest(APITestCase):
         url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
 
         res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_updating_task_possible_if_id_exists(self):
+        task_id = self.task1.id
+        url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
+
+        updated_data = {
+            "title": "new title",
+        }
+
+        res = self.client.put(url, updated_data)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            Task.objects.get(id=task_id).title,
+            updated_data["title"],
+        )
+
+    def test_updating_task_with_unknown_id_returns_404(self):
+        task_id = self.task1.id + self.task2.id
+        url = reverse(self.task_detail_view_name, kwargs={"pk": task_id})
+
+        res = self.client.put(url)
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
