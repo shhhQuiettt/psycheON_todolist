@@ -49,7 +49,9 @@ const TableRowForm = ({ rowData, rowNumber, onSuccess }) => {
               label="Done date"
               inputFormat="YYYY-MM-DD"
               value={
-                formData.done ? dayjs(formData.done_date, "YYYY-MM-DD") : null
+                formData.done
+                  ? dayjs(formData.done_date, "YYYY-MM-DD")
+                  : dayjs()
               }
               onChange={(v) => {
                 setFormData({

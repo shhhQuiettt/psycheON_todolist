@@ -52,10 +52,12 @@ const TodoList = ({ tasks, refreshTasks }) => {
                 <TableCell>
                   <Typography
                     sx={
-                      row.done && {
-                        textDecoration: "line-through",
-                        color: "gray",
-                      }
+                      row.done
+                        ? {
+                            textDecoration: "line-through",
+                            color: "gray",
+                          }
+                        : {}
                     }
                   >
                     {row.title}
