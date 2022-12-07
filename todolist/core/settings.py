@@ -25,15 +25,27 @@ SECRET_KEY = "django-insecure-$baz^pn0zfq9#^-b)k!+e*sp)8ugo#q^^a*=g&va3hlvlh0wqh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
+# CORS_ALLOWED_ORIGINS = []
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+# if DEBUG:
+#     CORS_ALLOWED_ORIGINS += ["http://127.0.0.1:3000", "http://localhost:3000"]
+
+# print(CORS_ALLOWED_ORIGINS)
 # Application definition
 
 INSTALLED_APPS = [
     "todotasks.apps.TodotasksConfig",
     "rest_framework",
     "drf_spectacular",
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

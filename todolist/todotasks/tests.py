@@ -302,3 +302,25 @@ class TasksDetailApiTest(APITestCase):
         res = self.client.put(url)
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_toggling_done_to_true_sets_current_date_as_done_date(self):
+        undone_task = Task.objects.create(
+            title="123",
+            done=False,
+            author_ip="10.0.0.4",
+            created_date=(timezone.now() - timedelta(days=9)).date(),
+            done_date=None,
+        )
+        url = reverse(self.task_detail_view_name, kwargs={"pk": undone_task.id})
+
+        updated_data = {"done": True}
+
+        res = self.client.patch(url, updated_data)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            Task.objects.get(id=undone_task.id).done,
+        )
+        self.assertEqual(
+            Task.objects.get(id=undone_task.id).done_date, timezone.now().date()
+        )

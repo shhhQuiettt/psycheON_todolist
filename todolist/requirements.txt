@@ -13,3 +13,4 @@ PyYAML==6.0
 redgreenunittest==0.1.1
 sqlparse==0.4.3
 uritemplate==4.1.1
+django-cors-headers

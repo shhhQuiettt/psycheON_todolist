@@ -26,11 +26,7 @@ class TaskListView(generics.ListCreateAPIView):
         if client_ip is None:
             raise BadRequestException("Cannot extract ip address")
 
-        done_date = serializer.validated_data.get("done_date")
-        if serializer.validated_data.get("done") is True and done_date is None:
-            done_date = timezone.now().date()
-
-        serializer.save(author_ip=client_ip, done_date=done_date)
+        serializer.save(author_ip=client_ip)
 
 
 @extend_schema_view(
