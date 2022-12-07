@@ -1,0 +1,13 @@
+:root {
+    --col-bg: #fdfff0;
+    --shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+body {
+    background-color: var(--col-bg);
+
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
