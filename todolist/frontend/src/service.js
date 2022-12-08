@@ -16,7 +16,9 @@ export const fetchAllTasks = async () => {
     return res.data;
   } catch (error) {
     console.error(error);
-    return [];
+    if (!error.response && error.request) {
+      throw Error("Connection Error");
+    }
   }
 };
 
